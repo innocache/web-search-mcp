@@ -1,0 +1,135 @@
+{
+  "simple-article.html": {
+    "with": [
+      "City Transit Board Approves Overnight Service Pilot",
+      "six-month overnight service pilot",
+      "Blue and Green rail lines",
+      "restaurant workers, hospital staff, and airport employees",
+      "Board chair Elena Ruiz",
+      "final recommendation before the winter budget cycle"
+    ],
+    "without": [],
+    "minQuality": 65,
+    "hasTitle": true,
+    "hasAuthor": true
+  },
+  "article-with-ads.html": {
+    "with": [
+      "How Regional Newsrooms Share Climate Data",
+      "regional editors now begins each morning with the same flood map",
+      "common data dictionary",
+      "rotating verification shift",
+      "public methods page describing sourcing"
+    ],
+    "without": [
+      "cookie technology",
+      "Accept cookie settings",
+      "sponsor message",
+      "Share on X",
+      "Share on LinkedIn"
+    ],
+    "minQuality": 55,
+    "hasTitle": true,
+    "hasAuthor": false
+  },
+  "article-with-metadata.html": {
+    "with": [
+      "Inside the Public Library's Digital Preservation Lab",
+      "secured room below the main reading hall",
+      "forensic disk images and run checksum validation",
+      "Oral-history interviews",
+      "Lab director Naomi Fields"
+    ],
+    "without": [],
+    "minQuality": 65,
+    "hasTitle": true,
+    "hasAuthor": true
+  },
+  "lazy-images.html": {
+    "with": [
+      "Field Notes From the River Restoration Corridor",
+      "reopening side channels",
+      "temperature and dissolved oxygen every six hours",
+      "more birds and fewer flooding concerns",
+      "insect abundance against pre-project baselines"
+    ],
+    "without": [],
+    "minQuality": 60,
+    "hasTitle": true,
+    "hasAuthor": false
+  },
+  "heavy-navigation.html": {
+    "with": [
+      "Morning Briefing: Regional Rail Update",
+      "overnight switch repairs finished ahead of schedule",
+      "weekend bus bridges will continue",
+      "elevator access improvements"
+    ],
+    "without": [
+      "Classifieds",
+      "Privacy Policy",
+      "Terms of Use",
+      "Cookie Policy",
+      "TikTok",
+      "Mastodon"
+    ],
+    "minQuality": 35,
+    "hasTitle": true,
+    "hasAuthor": false
+  },
+  "js-rendered.html": {
+    "with": [
+      "Live Blog: Emergency Preparedness Drill",
+      "coordinated emergency drill Tuesday morning",
+      "shared incident board",
+      "multilingual templates improved readability",
+      "after-action memo next week"
+    ],
+    "without": [
+      "JavaScript is disabled",
+      "noscript mode"
+    ],
+    "minQuality": 55,
+    "hasTitle": true,
+    "hasAuthor": false
+  },
+  "csr-delayed.html": {
+    "with": [
+      "Delayed Article: Urban Farming Initiative",
+      "urban farming initiative",
+      "community gardens",
+      "composting pilot",
+      "Council member Rivera"
+    ],
+    "without": [
+      "Loading..."
+    ],
+    "minQuality": 50,
+    "hasTitle": true,
+    "hasAuthor": false
+  },
+  "empty-page.html": {
+    "with": [],
+    "without": [],
+    "minQuality": 0,
+    "maxQuality": 30,
+    "hasTitle": false,
+    "hasAuthor": false
+  },
+  "large-page.html": {
+    "with": [
+      "Decade-Long Reinvention of Harbor District Transit",
+      "modernize two stations",
+      "Planning, Then Replanning",
+      "Construction in a Changing Climate",
+      "Neighborhood Effects",
+      "Operational Lessons and Measured Results",
+      "What Comes Next",
+      "integrated fare capping"
+    ],
+    "without": [],
+    "minQuality": 70,
+    "hasTitle": true,
+    "hasAuthor": false
+  }
+}

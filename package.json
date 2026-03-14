@@ -1,0 +1,45 @@
+{
+  "name": "web-search-mcp",
+  "version": "1.0.0",
+  "description": "Production MCP server for web search and content extraction via Electron",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "electron dist/index.js",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "bundle-readability": "node scripts/bundle-readability.mjs",
+    "prebuild": "npm run bundle-readability",
+    "lint": "tsc --noEmit",
+    "test:e2e": "vitest run --config vitest.e2e.config.ts",
+    "test:e2e:electron": "npx tsx scripts/run-electron-tests.mts",
+    "test:all": "vitest run && vitest run --config vitest.e2e.config.ts && npx tsx scripts/run-electron-tests.mts",
+    "refresh-fixtures": "npx tsx scripts/refresh-fixtures.mts"
+  },
+  "keywords": [
+    "mcp",
+    "search",
+    "electron",
+    "readability"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@mozilla/readability": "^0.6.0",
+    "electron": "^41.0.2",
+    "linkedom": "^0.18.12",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "esbuild": "^0.27.4",
+    "jsdom": "^28.1.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}
