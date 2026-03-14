@@ -235,7 +235,9 @@ Verified all tests still pass after deletion.
 Created `scripts/manual-search-test.mts` for ad-hoc real-world testing:
 - Spawns the Electron MCP server as a child process
 - Connects via MCP SDK client over stdio
-- Supports all 3 search tools: `fetch_search_and_extract`, `search_web`, `open_result`
+- Supports all 4 tools: `fetch_search_and_extract`, `search_web`, `open_result`, `extract_url`
+- `extract_url` support enables direct URL extraction without a search query
+- Configurable options: `--format`, `--chars`, `--timeout`, `--settle`, `--rank`, `--num`
 - Filters noisy Chromium cert/SSL warnings from stderr
 - Outputs human-readable summary to stderr, full JSON to stdout (pipeable)
 - Full `--help` flag with usage examples
@@ -332,7 +334,7 @@ src/
 - All passing
 
 ### Scripts
-- `manual-search-test.mts` — Real Google search via MCP client (supports --help)
+- `manual-search-test.mts` — Real Google search and URL extraction via MCP client (supports --help, all 4 tools)
 - `quality-audit-main.mjs` / `run-quality-audit.mts` — Extraction quality audit
 - `electron-test-main.mjs` / `run-electron-tests.mts` — Electron test runner
 - `refresh-fixtures.mts` — Regenerate HTML fixtures

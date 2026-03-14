@@ -1,6 +1,7 @@
 /**
- * Manual end-to-end search test — spawns the MCP server in Electron and
- * calls fetch_search_and_extract to search Google and extract top results.
+ * Manual end-to-end test — spawns the MCP server in Electron and calls
+ * a tool (search, extract, or both). Supports direct URL extraction via
+ * the extract_url tool.
  *
  * Run with --help for usage information.
  */
@@ -16,38 +17,39 @@ import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js'
 function printHelp(): void {
   const bin = 'npx tsx scripts/manual-search-test.mts';
   console.error(`
-web-search-mcp  Manual Search Test
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+web-search-mcp  Manual Search & Extract Test
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Spawns the Electron MCP server and runs a real Google search with
-content extraction. Summary prints to stderr; full JSON to stdout.
+Spawns the Electron MCP server and runs a search, URL extraction, or both.
+Summary prints to stderr; full JSON to stdout.
 
 USAGE
-  ${bin} <query> [options]
-
+  ${bin} <query-or-url> [options]
 EXAMPLES
   ${bin} "what is MCP"
   ${bin} "rust vs go" --num 5 --format markdown
   ${bin} "react server components" --tool search_web
   ${bin} "best databases 2025" --tool open_result --rank 2
+  ${bin} --tool extract_url https://example.com/article
+  ${bin} --tool extract_url https://github.com/org/repo --format markdown --chars 12000
   ${bin} "climate change" --chars 12000 --timeout 30000
   ${bin} "AI news" > results.json          # pipe JSON to file
   ${bin} "AI news" | jq '.extracted_results[].title'
-
 OPTIONS
   --tool <name>   Tool to invoke (default: fetch_search_and_extract)
                     fetch_search_and_extract  Search + extract top N results
                     search_web                Search only (no extraction)
                     open_result               Search + extract one ranked result
+                    extract_url               Extract content from a single URL
   --num <n>       Number of results (1-5 for extract, 1-10 for search, default 3)
   --rank <n>      Which result to extract with open_result (default 1)
   --format <fmt>  Output format: text | markdown | html (default text)
   --chars <n>     Max characters per extracted result (default 8000)
   --timeout <ms>  Extraction timeout per URL in ms (default 15000)
+  --settle <ms>   Post-load settle time in ms (default 1200)
   --help, -h      Show this help
-
 OUTPUT
-  stderr  Human-readable summary (search results, extraction scores)
+  stderr  Human-readable summary (extraction scores, content preview)
   stdout  Full JSON response (pipe to jq, file, etc.)
 `.trim());
 }
@@ -69,11 +71,12 @@ const numResults = parseInt(flag('num', '3'), 10);
 const outputFormat = flag('format', 'text') as 'text' | 'markdown' | 'html';
 const maxChars = parseInt(flag('chars', '8000'), 10);
 const timeoutMs = parseInt(flag('timeout', '15000'), 10);
+const settleMs = parseInt(flag('settle', '1200'), 10);
 const toolName = flag('tool', 'fetch_search_and_extract');
 const rank = parseInt(flag('rank', '1'), 10);
-// Remaining non-flag args form the query
-const query = args.filter((a) => !a.startsWith('--')).join(' ').trim();
-if (!query) {
+// Remaining non-flag args form the query (or URL for extract_url)
+const positional = args.filter((a) => !a.startsWith('--')).join(' ').trim();
+if (!positional) {
   printHelp();
   process.exit(1);
 }
@@ -92,8 +95,12 @@ const require = createRequire(import.meta.url);
 const electronPath: string = require('electron') as unknown as string;
 
 console.error(`[search-test] Electron: ${electronPath}`);
-console.error(`[search-test] Query: "${query}"`);
-console.error(`[search-test] Tool: ${toolName} | Results: ${numResults} | Format: ${outputFormat}`);
+if (toolName === 'extract_url') {
+  console.error(`[search-test] URL: ${positional}`);
+} else {
+  console.error(`[search-test] Query: "${positional}"`);
+}
+console.error(`[search-test] Tool: ${toolName} | Format: ${outputFormat}`);
 console.error('');
 
 // ── Connect MCP client to Electron server ───────────────────────────────────
@@ -141,12 +148,21 @@ try {
   let toolArgs: Record<string, unknown>;
 
   switch (toolName) {
+    case 'extract_url':
+      toolArgs = {
+        url: positional,
+        output_format: outputFormat,
+        max_chars: maxChars,
+        timeout_ms: timeoutMs,
+        settle_time_ms: settleMs,
+      };
+      break;
     case 'search_web':
-      toolArgs = { query, num_results: numResults };
+      toolArgs = { query: positional, num_results: numResults };
       break;
     case 'open_result':
       toolArgs = {
-        query,
+        query: positional,
         rank,
         output_format: outputFormat,
         max_chars: maxChars,
@@ -155,7 +171,7 @@ try {
     case 'fetch_search_and_extract':
     default:
       toolArgs = {
-        query,
+        query: positional,
         num_results: numResults,
         output_format: outputFormat,
         max_chars_per_result: maxChars,
@@ -208,6 +224,28 @@ try {
     console.error(`  Score: ${parsed.extraction.extraction_score}`);
     console.error(`  Length: ${parsed.extraction.content_length}`);
     console.error('');
+  }
+
+  // extract_url returns fields at top level
+  if (parsed.score !== undefined) {
+    console.error('── Extraction ──');
+    console.error(`  Title:   ${parsed.title || '(none)'}`);
+    console.error(`  Byline:  ${parsed.byline || '(none)'}`);
+    console.error(`  Excerpt: ${(parsed.excerpt || '(none)').slice(0, 120)}`);
+    console.error(`  Score:   ${parsed.score} / 100 (${parsed.scoreLabel})`);
+    const textLen = parsed.textContent?.length ?? parsed.content?.length ?? 0;
+    console.error(`  Length:  ${textLen} chars`);
+    if (parsed.warnings?.length) {
+      console.error(`  Warnings: ${parsed.warnings.join(', ')}`);
+    }
+    console.error('');
+    // Print a content preview to stderr
+    const preview = (parsed.content || '').slice(0, 500);
+    if (preview) {
+      console.error('── Content Preview (first 500 chars) ──');
+      console.error(preview);
+      console.error('');
+    }
   }
 
   // Full output to stdout (pipeable)

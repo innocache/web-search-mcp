@@ -195,6 +195,7 @@ npx tsx scripts/run-quality-audit.mts
 # Manual search test
 npx tsx scripts/manual-search-test.mts --help
 npx tsx scripts/manual-search-test.mts "your search query"
+npx tsx scripts/manual-search-test.mts --tool extract_url https://example.com/article
 ```
 
 See [docs/TESTING.md](docs/TESTING.md) for the full testing guide.

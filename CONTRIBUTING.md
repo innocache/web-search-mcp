@@ -13,7 +13,7 @@ To contribute to this project, ensure you have the following installed:
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/your-repo/web-search-mcp.git
+    git clone https://github.com/innocache/web-search-mcp.git
     cd web-search-mcp
     ```
 
@@ -94,12 +94,17 @@ npx tsx scripts/run-quality-audit.mts
 This script spawns Electron, visits each URL, extracts content, and scores the result (0-100). A passing score is >= 65 for article pages. See [docs/QUALITY.md](docs/QUALITY.md) for details.
 
 ## Manual Testing
-
-You can manually test the search and extraction functionality using the provided script:
+You can manually test search and extraction using the provided script:
 ```bash
+# Show all options
 npx tsx scripts/manual-search-test.mts --help
+# Search the web
+npx tsx scripts/manual-search-test.mts "your search query"
+
+# Extract content from a specific URL
+npx tsx scripts/manual-search-test.mts --tool extract_url https://example.com/article
 ```
-This allows you to run searches against specific providers and inspect the extracted content without starting the full MCP server.
+This supports all 4 MCP tools (`fetch_search_and_extract`, `search_web`, `open_result`, `extract_url`) and outputs a human-readable summary to stderr with full JSON to stdout.
 
 ## Building
 

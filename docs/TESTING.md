@@ -61,8 +61,9 @@ A comprehensive audit script that visits a diverse set of 12 Tier A URLs to meas
     - **Tier B**: Restricted or paywalled pages used for qualitative analysis.
 
 ### Manual Search Test
-An ad-hoc testing tool that spawns the MCP server and executes real Google searches. It is used to verify the end-to-end flow from query to extracted content.
-- **Execution**: `npx tsx scripts/manual-search-test.mts "your query"`
+An ad-hoc testing tool that spawns the MCP server and executes real Google searches or direct URL extractions. It supports all 4 tools (`fetch_search_and_extract`, `search_web`, `open_result`, `extract_url`).
+- **Search**: `npx tsx scripts/manual-search-test.mts "your query"`
+- **Extract URL**: `npx tsx scripts/manual-search-test.mts --tool extract_url https://example.com/article`
 - **Help**: `npx tsx scripts/manual-search-test.mts --help`
 
 ## Test Fixtures
