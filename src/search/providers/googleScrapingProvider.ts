@@ -264,6 +264,7 @@ export class GoogleScrapingProvider implements SearchProvider {
     searchUrl.searchParams.set('num', String(numResults));
     searchUrl.searchParams.set('hl', locale);
     searchUrl.searchParams.set('gl', region);
+    searchUrl.searchParams.set('udm', 'web');
 
     const firstAttempt = await this.fetchRawResults(searchUrl.toString(), locale);
     const withRetry = firstAttempt.length > 0
