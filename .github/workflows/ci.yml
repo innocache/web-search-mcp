@@ -37,6 +37,10 @@ jobs:
 
       - name: E2E tests (mocked Electron)
         run: xvfb-run --auto-servernum npm run test:e2e
+        env:
+          ELECTRON_DISABLE_SANDBOX: 1
 
       - name: E2E tests (real Electron)
         run: xvfb-run --auto-servernum npm run test:e2e:electron
+        env:
+          ELECTRON_DISABLE_SANDBOX: 1
